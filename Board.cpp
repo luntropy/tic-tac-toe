@@ -41,9 +41,9 @@ void Board::copy_children(const Board& board) {
 }
 
 void Board::allocate_memory() {
-    this->board = new char*[N];
+    this->board = new std::string*[N];
     for (int i = 0; i < N; ++i) {
-        this->board[i] = new char[N];
+        this->board[i] = new std::string[N];
     }
 }
 
@@ -64,7 +64,7 @@ Board::Board() {
 
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
-            this->board[i][j] = '-';
+            this->board[i][j] = "-";
         }
     }
 
@@ -73,7 +73,7 @@ Board::Board() {
     this->set_board_utility();
 }
 
-Board::Board(char** board) {
+Board::Board(std::string** board) {
     this->allocate_memory();
 
     for (int i = 0; i < N; ++i) {
@@ -87,7 +87,7 @@ Board::Board(char** board) {
     this->set_board_utility();
 }
 
-Board::Board(char board[N][N]) {
+Board::Board(std::string board[N][N]) {
     this->allocate_memory();
 
     for (int i = 0; i < N; ++i) {
@@ -122,7 +122,7 @@ Board::~Board() {
     this->clear();
 }
 
-void Board::generate_children(char c) {
+void Board::generate_children(std::string c) {
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
             if (this->test_move(i + 1, j + 1, c)) {
@@ -138,7 +138,7 @@ void Board::generate_children(char c) {
     }
 }
 
-char** Board::get_board() const {
+std::string** Board::get_board() const {
     return this->board;
 }
 
@@ -177,7 +177,7 @@ bool Board::terminal_test() const {
 
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
-            if (this->board[i][j] == '-') {
+            if (this->board[i][j] == "-") {
                 return false;
             }
         }
@@ -186,22 +186,22 @@ bool Board::terminal_test() const {
     return true;
 }
 
-bool Board::test_move(int x, int y, char c) const {
+bool Board::test_move(int x, int y, std::string c) const {
     --x;
     --y;
 
-    if (this->board[x][y] == '-') {
+    if (this->board[x][y] == "-") {
         return true;
     }
 
     return false;
 }
 
-bool Board::make_move(int x, int y, char c) {
+bool Board::make_move(int x, int y, std::string c) {
     --x;
     --y;
 
-    if (this->board[x][y] == '-') {
+    if (this->board[x][y] == "-") {
         this->board[x][y] = c;
 
         return true;
@@ -213,10 +213,10 @@ bool Board::make_move(int x, int y, char c) {
 bool Board::x_wins() const {
     bool wins = false;
     for (int i = 0; i < N; ++i) {
-        if (this->board[i][0] == 'X' && this->board[i][1] == 'X' && this->board[i][2] == 'X') {
+        if (this->board[i][0] == "X" && this->board[i][1] == "X" && this->board[i][2] == "X") {
             wins = true;
         }
-        else if (this->board[0][i] == 'X' && this->board[1][i] == 'X' && this->board[2][i] == 'X') {
+        else if (this->board[0][i] == "X" && this->board[1][i] == "X" && this->board[2][i] == "X") {
             wins = true;
         }
         else {
@@ -228,24 +228,60 @@ bool Board::x_wins() const {
         }
     }
 
-    if (this->board[0][0] == 'X' && this->board[1][1] == 'X' && this->board[2][2] == 'X') {
+    if (this->board[0][0] == "X" && this->board[1][1] == "X" && this->board[2][2] == "X") {
         wins = true;
     }
 
-    if (this->board[0][2] == 'X' && this->board[1][1] == 'X' && this->board[2][0] == 'X') {
+    if (this->board[0][2] == "X" && this->board[1][1] == "X" && this->board[2][0] == "X") {
         wins = true;
     }
 
     return wins;
 }
 
+void Board::cross_x() {
+    bool wins = false;
+    for (int i = 0; i < N; ++i) {
+        if (this->board[i][0] == "X" && this->board[i][1] == "X" && this->board[i][2] == "X") {
+            this->board[i][0] = "X\u0336";
+            this->board[i][1] = "X\u0336";
+            this->board[i][2] = "X\u0336";
+
+            wins = true;
+        }
+        else if (this->board[0][i] == "X" && this->board[1][i] == "X" && this->board[2][i] == "X") {
+            this->board[0][i] = "X\u0336";
+            this->board[1][i] = "X\u0336";
+            this->board[2][i] = "X\u0336";
+
+            wins = true;
+        }
+
+        if (wins) {
+            return;
+        }
+    }
+
+    if (this->board[0][0] == "X" && this->board[1][1] == "X" && this->board[2][2] == "X") {
+        this->board[0][0] = "X\u0336";
+        this->board[1][1] = "X\u0336";
+        this->board[2][2] = "X\u0336";
+    }
+
+    if (this->board[0][2] == "X" && this->board[1][1] == "X" && this->board[2][0] == "X") {
+        this->board[0][2] = "X\u0336";
+        this->board[1][1] = "X\u0336";
+        this->board[2][0] = "X\u0336";
+    }
+}
+
 bool Board::o_wins() const {
     bool wins = false;
     for (int i = 0; i < N; ++i) {
-        if (this->board[i][0] == 'O' && this->board[i][1] == 'O' && this->board[i][2] == 'O') {
+        if (this->board[i][0] == "O" && this->board[i][1] == "O" && this->board[i][2] == "O") {
             wins = true;
         }
-        else if (this->board[0][i] == 'O' && this->board[1][i] == 'O' && this->board[2][i] == 'O') {
+        else if (this->board[0][i] == "O" && this->board[1][i] == "O" && this->board[2][i] == "O") {
             wins = true;
         }
         else {
@@ -257,15 +293,51 @@ bool Board::o_wins() const {
         }
     }
 
-    if (this->board[0][0] == 'O' && this->board[1][1] == 'O' && this->board[2][2] == 'O') {
+    if (this->board[0][0] == "O" && this->board[1][1] == "O" && this->board[2][2] == "O") {
         wins = true;
     }
 
-    if (this->board[0][2] == 'O' && this->board[1][1] == 'O' && this->board[2][0] == 'O') {
+    if (this->board[0][2] == "O" && this->board[1][1] == "O" && this->board[2][0] == "O") {
         wins = true;
     }
 
     return wins;
+}
+
+void Board::cross_o() {
+    bool wins = false;
+    for (int i = 0; i < N; ++i) {
+        if (this->board[i][0] == "O" && this->board[i][1] == "O" && this->board[i][2] == "O") {
+            this->board[i][0] = "O\u0336";
+            this->board[i][1] = "O\u0336";
+            this->board[i][2] = "O\u0336";
+
+            wins = true;
+        }
+        else if (this->board[0][i] == "O" && this->board[1][i] == "O" && this->board[2][i] == "O") {
+            this->board[0][i] = "O\u0336";
+            this->board[1][i] = "O\u0336";
+            this->board[2][i] = "O\u0336";
+
+            wins = true;
+        }
+
+        if (wins) {
+            return;
+        }
+    }
+
+    if (this->board[0][0] == "O" && this->board[1][1] == "O" && this->board[2][2] == "O") {
+        this->board[0][0] = "O\u0336";
+        this->board[1][1] = "O\u0336";
+        this->board[2][2] = "O\u0336";
+    }
+
+    if (this->board[0][2] == "O" && this->board[1][1] == "O" && this->board[2][0] == "O") {
+        this->board[0][2] = "O\u0336";
+        this->board[1][1] = "O\u0336";
+        this->board[2][0] = "O\u0336";
+    }
 }
 
 Board* Board::get_action(Board* current, Board* board) {

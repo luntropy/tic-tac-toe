@@ -38,13 +38,13 @@ bool Game::player_move() {
 
     if (x >= 1 && x <= 3 && y >= 1 && y <= 3) {
         if (this->get_player_choice()) {
-            if (!this->game_state->make_move(x, y, 'X')) {
+            if (!this->game_state->make_move(x, y, "X")) {
                 std::cout << "Invalid move" << std::endl;
                 return false;
             }
         }
         else {
-            if (!this->game_state->make_move(x, y, 'O')) {
+            if (!this->game_state->make_move(x, y, "O")) {
                 std::cout << "Invalid move" << std::endl;
                 return false;
             }
@@ -71,11 +71,11 @@ std::pair<int, Board*> Game::max_value(Board* state, int a, int b) {
     v.first = INT_MIN;
 
     if (!state->get_children().size()) {
-        state->generate_children('X');
+        state->generate_children("X");
     }
     else {
         state->clear_children();
-        state->generate_children('X');
+        state->generate_children("X");
     }
 
     for (unsigned long int i = 0; i < state->get_children().size(); ++i) {
@@ -105,11 +105,11 @@ std::pair<int, Board*> Game::min_value(Board* state, int a, int b) {
     v.first = INT_MAX;
 
     if (!state->get_children().size()) {
-        state->generate_children('O');
+        state->generate_children("O");
     }
     else {
         state->clear_children();
-        state->generate_children('O');
+        state->generate_children("O");
     }
 
     for (unsigned long int i = 0; i < state->get_children().size(); ++i) {
@@ -148,7 +148,7 @@ void Game::ai_move(int turn) {
         int x = rand() % 3 + 1;
         int y = rand() % 3 + 1;
 
-        this->game_state->make_move(x, y, 'X');
+        this->game_state->make_move(x, y, "X");
     }
     else {
         this->update_game_state(this->alpha_beta_search());
@@ -156,40 +156,7 @@ void Game::ai_move(int turn) {
 }
 
 bool Game::check_game_end() const {
-    if (this->get_player_choice()) {
-        if (this->game_state->x_wins()) {
-            std::cout << std::endl;
-            std::cout << "\tThe Player Won" << std::endl;
-            std::cout << std::endl;
-
-            return true;
-        }
-        else if (this->game_state->o_wins()) {
-            std::cout << std::endl;
-            std::cout << "\tThe AI Won" << std::endl;
-            std::cout << std::endl;
-
-            return true;
-        }
-    }
-    else {
-        if (this->game_state->x_wins()) {
-            std::cout << std::endl;
-            std::cout << "\tThe AI Won" << std::endl;
-            std::cout << std::endl;
-
-            return true;
-        }
-        else if (this->game_state->o_wins()) {
-            std::cout << std::endl;
-            std::cout << "\tThe Player Won" << std::endl;
-            std::cout << std::endl;
-
-            return true;
-        }
-    }
-
-    if (this->game_state->terminal_test()) {
+    if (!this->game_state->x_wins() && !this->game_state->o_wins() && this->game_state->terminal_test()) {
         std::cout << std::endl;
         std::cout << "\t    Draw" << std::endl;
         std::cout << std::endl;
@@ -199,6 +166,30 @@ bool Game::check_game_end() const {
     else {
         return false;
     }
+}
+
+void Game::end_game(char c) const {
+    this->print_logo();
+    this->print_state();
+
+    std::cout << std::endl;
+    if (this->get_player_choice()) {
+        if (c == 'X') {
+            std::cout << "\tThe Player Won" << std::endl;
+        }
+        else {
+            std::cout << "\tThe AI Won" << std::endl;
+        }
+    }
+    else {
+        if (c == 'X') {
+            std::cout << "\tThe AI Won" << std::endl;
+        }
+        else {
+            std::cout << "\tThe Player Won" << std::endl;
+        }
+    }
+    std::cout << std::endl;
 }
 
 void Game::copy_game_obj(const Game& game) {
@@ -260,6 +251,17 @@ void Game::play() {
         int itr = 0;
         while (itr < 10) {
             if (std::system("clear") == 0) {
+                if (this->game_state->x_wins()) {
+                    this->game_state->cross_x();
+                    this->end_game('X');
+                    break;
+                }
+                else if (this->game_state->o_wins()) {
+                    this->game_state->cross_o();
+                    this->end_game('O');
+                    break;
+                }
+
                 this->print_logo();
                 this->print_state();
 

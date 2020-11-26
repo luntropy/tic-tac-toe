@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include <string>
 #include <vector>
 
 #include <random>
@@ -13,7 +14,7 @@ class Board {
 private:
     Board* parent;
     int depth;
-    char** board;
+    std::string** board;
     int board_utility;
     std::vector<Board*> children;
 
@@ -28,15 +29,15 @@ private:
 
 public:
     Board();
-    Board(char**);
-    Board(char[N][N]);
+    Board(std::string**);
+    Board(std::string[N][N]);
     Board(Board*);
     Board(const Board&);
     Board& operator=(const Board&);
     ~Board();
 
-    void generate_children(char);
-    char** get_board() const;
+    void generate_children(std::string);
+    std::string** get_board() const;
     Board* get_parent() const;
     int get_depth() const;
     int get_utility() const;
@@ -44,10 +45,12 @@ public:
 
     int utility() const;
     bool terminal_test() const;
-    bool test_move(int, int, char) const;
-    bool make_move(int, int, char);
+    bool test_move(int, int, std::string) const;
+    bool make_move(int, int, std::string);
     bool x_wins() const;
+    void cross_x();
     bool o_wins() const;
+    void cross_o();
     Board* get_action(Board*, Board*);
     void clear_children();
 
