@@ -207,7 +207,7 @@ void Game::print_logo() const {
 }
 
 void Game::print_error_msg() const {
-    std::cout << "Program failure" << std::endl;
+    std::cout << "The Game ended prematurely" << std::endl;
 }
 
 void Game::print_state() const {
