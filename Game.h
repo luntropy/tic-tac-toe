@@ -29,6 +29,7 @@ private:
     void ai_move(int);
 
     bool check_game_end() const;
+    void end_game(char) const;
     void copy_game_obj(const Game&);
     void clear();
 
