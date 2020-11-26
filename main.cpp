@@ -1,11 +1,14 @@
 #include <iostream>
 
-#include "Board.h"
+#include <random>
+
+#include "Game.h"
 
 int main() {
-    Board* start = new Board();
+    srand(time(NULL));
+    Game game;
 
-    start->print_state();
+    game.play();
 
     return 0;
 }
