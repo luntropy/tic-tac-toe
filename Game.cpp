@@ -144,15 +144,7 @@ Board* Game::alpha_beta_search() {
 }
 
 void Game::ai_move(int turn) {
-    if (!this->get_player_choice() && turn == 0) {
-        int x = rand() % 3 + 1;
-        int y = rand() % 3 + 1;
-
-        this->game_state->make_move(x, y, "X");
-    }
-    else {
-        this->update_game_state(this->alpha_beta_search());
-    }
+    this->update_game_state(this->alpha_beta_search());
 }
 
 bool Game::check_game_end() const {
